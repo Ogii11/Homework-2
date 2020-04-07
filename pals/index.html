@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <style>
+        section{
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 50vh;
+            flex-wrap: wrap;
+        }
+        #num{
+            font-size: 30px;
+            padding: 25px;
+            border-radius: 25px;
+            transition: 0.5s;
+        }
+        #submit{
+            display: none;
+        }
+        .lSquare{
+            width: 100px;
+            height: 100px;
+            font-size: 50px;
+            text-align: center;
+            background-color: rgb(238, 171, 71);
+            border: none;
+            border-radius: 15px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .lSquare.addSquare{
+            background-color: rgb(255, 211, 144);
+        }
+        .tools{
+            background-color: rgb(119, 168, 35,29);
+            position: fixed;
+            height: 30px;
+            width: 40vw;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: space-around;
+        }
+        .delete-btn{
+            background-color: #f9decda1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border: none;
+            transition: 1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            opacity: 0;
+            left: 10px;
+            margin-bottom: 5px;
+        }
+        .delete-btn-appear.delete-btn.delete-btn-active{
+            opacity: 1;
+            background-color: #e02020a1;
+        }
+        .delete-btn.delete-btn-active{
+            opacity: 1;
+            background-color: #e02020a1;
+        }
+        .delete-btn-appear.delete-btn{
+            opacity: 1;
+        }
+        #result{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <input type="number" name="num" id="num" placeholder="Enter number of letters">
+    </section>
+    <div id="result">
+        <h1></h1>
+    </div>
+
+    <script>
+        let numberOfLetters;
+        let state = false;
+        function start(e){
+            if (e.keyCode == 13){
+                var field = document.getElementById('num'); 
+                if(field.value < 2){
+                    field.value = "";
+                    field.placeholder = "Error";
+                    field.style.borderColor = "red";
+                } else {
+                    numberOfLetters = field.value;
+                    field.style.display = "none";
+                    createSquare(numberOfLetters);
+                }
+                state = true;
+            }
+        }
+
+        function deleteButton(e){
+            e.target.parentNode.firstElementChild.classList.add('delete-btn-appear');
+        }
+        
+        function deleteButtonRev(e){
+            let delButton = e.target.parentNode.firstElementChild;
+            setTimeout(function(){
+                e.target.parentNode.firstElementChild.classList.remove('delete-btn-appear');
+            },1000);
+        }
+        var parent;
+        let addSqr;
+        function createSquare(a=1){
+            for (let i = 0; i < a; i++) {
+                var square = document.createElement('input');
+                square.type = "text";
+                square.pattern = "[A-Za-z]{1}"
+                square.classList.add("lSquare")
+                square.addEventListener('mouseover', deleteButton);
+                square.addEventListener('mouseleave', deleteButtonRev);
+                var delet = document.createElement('div');
+                delet.classList.add("delete-btn");
+                delet.addEventListener('click', deleteSquare);
+                delet.addEventListener('mouseover', function(){this.classList.add("delete-btn-active")});
+                delet.addEventListener('mouseleave', function(){this.classList.remove("delete-btn-active")})
+                delet.innerHTML = "<i class=\"fas fa-trash-alt\"></i>"
+                parent = document.createElement('div');
+                parent.appendChild(delet);
+                parent.appendChild(square);
+                document.querySelector('section').appendChild(parent);
+            }
+            addSqr = document.createElement('button');
+            addSqr.classList.add("lSquare");
+            addSqr.classList.add("addSquare");
+            addSqr.setAttribute("onclick","addBox(this)");
+            addSqr.innerHTML = "<i class=\"fas fa-plus\"></i>";
+            document.querySelector('section').appendChild(addSqr);
+        }
+        document.getElementById("num").addEventListener('keyup',start);
+        function deleteSquare(e){
+            if(e.target.innerHTML == "<i class=\"fas fa-trash-alt\"></i>"){
+                e.target.parentNode.remove();
+            } else {
+                e.target.parentNode.parentNode.remove();
+            }
+        }
+        function addBox(e){
+            var cont = e.parentNode;
+            cont.lastChild.remove();
+            createSquare(1);
+        }
+        window.addEventListener('keydown', checkForPals);
+        function checkForPals(e){
+            if(state){
+                if(e.keyCode == 13){
+                    var a = Array.prototype.slice.call(document.querySelectorAll('input[type="text"]'));
+                    if((!a.some(e=> e.value.match(/[A-Za-z]{2}/))) && a.every(e => e.value.match(/[A-Za-z]{1}/))){
+                        var inputValues = Array.prototype.slice.call(document.querySelectorAll('input[type="text"]'));
+                        var inputValuesString = inputValues.reduce((string,e)=>{
+                            return string += e.value;
+                        },"");
+                        var reversedString = inputValuesString.split('').reverse().join("");
+                        if(inputValuesString == reversedString){
+                            document.getElementById('result').firstElementChild.innerText = "Unijeta rijec jeste palindrom!";
+                        } else {
+                            document.getElementById('result').firstElementChild.innerText = "Unijeta rijec nije palindrom!";
+                        }
+                    } else {
+                        document.getElementById('result').firstElementChild.innerText = "Nepravilan unos!";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

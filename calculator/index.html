@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        main{
+            width: 224px;
+        }
+        button{
+            border-radius: 50%;
+            background-color: rgb(0, 15, 82);
+            border: none;
+            width: 50px;
+            height: 50px;
+            margin: 3px;
+        }
+        .controls{
+            display: flex;
+        }
+        .result{
+            flex: 3;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="controls">
+            <button onclick="operation(this)" class="clear">C</button>
+            <h2 class="result"></h2>
+        </div>
+        <div class="controls">
+            <button onclick="operation(this)">7</button>
+            <button onclick="operation(this)">8</button>
+            <button onclick="operation(this)">9</button>
+            <button onclick="operation(this)">+</button>
+        </div>
+        <div class="controls">
+            <button onclick="operation(this)">4</button>
+            <button onclick="operation(this)">5</button>
+            <button onclick="operation(this)">6</button>
+            <button onclick="operation(this)">-</button>
+        </div>
+        <div class="controls">
+            <button onclick="operation(this)">1</button>
+            <button onclick="operation(this)">2</button>
+            <button onclick="operation(this)">3</button>
+            <button onclick="operation(this)">*</button>
+        </div>
+        <div class="controls">
+            <button onclick="operation(this)">0</button>
+            <button onclick="operation(this)">.</button>
+            <button onclick="operation(this)">=</button>
+            <button onclick="operation(this)">/</button>
+        </div>
+    </main>
+    <script>
+        const result = document.getElementsByClassName("result")[0];
+        var a = "",b = 0,lastOp,fT=true;
+        function operation(e){
+            if(e.key == undefined){
+                var op = e.innerText;
+            } else {
+                var op = e.key;
+            }
+            if (op == "=") op = lastOp;
+            if(op == "0" || op == "1" || op == "2" || op == "3" || op == "4" || op == "5" || op == "6" || op == "7" || op == "8" || op == "9" || op == "."){
+                a += op;
+                result.innerText = a;
+            } else if(op.toUpperCase() == "C"){
+                a = "";
+                b = 0;
+                result.innerText = b;
+            } else {
+                if(fT){
+                    b += Number(a);
+                    a = "";
+                    fT = false;
+                    lastOp = op;
+                } else {
+                    if(lastOp == "+"){
+                    b += Number(a);
+                    a = "";
+                    } else if(lastOp == "-"){
+                        b -= Number(a);
+                        a = "";
+                    } else if(lastOp == "*"){
+                        b *= Number(a);
+                        a = "";
+                    } else if(lastOp == "/"){
+                        b /= Number(a);
+                        a = "";
+                    }
+                    lastOp = op;
+                }
+                result.innerText = "";
+            }     
+            if(e.innerText == "=" || e.key == "Enter") {
+                result.innerText = String(b);
+                fT = true;
+            }
+        }
+        window.addEventListener('keypress', function(e){operation(e)})
+    </script>
+</body>
+</html>

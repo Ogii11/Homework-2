@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        button{
+            border: none;
+            background-color: brown;
+            width: 200px;
+            height: 80px;
+            color: cornflowerblue;
+        }
+        header{
+            display: flex;
+            justify-content: center;
+        }
+        .selected{
+            background-color: blueviolet;
+        }
+        main{
+            display: flex;
+            flex-direction: column;
+        }
+        .clock{
+            display: flex;
+            justify-content: center;
+        }
+        .controls{
+            display: flex;
+            justify-content: center;
+        }
+        h1{
+            font-size: 72px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="breaks">
+            <button>Pomodoro</button>
+            <button>Short break</button>
+            <button>Long break</button>
+        </div>
+    </header>
+    <main>
+        <div class="clock">
+            <h1>00:00</h1>
+        </div>
+        <div class="controls">
+            <button onclick="startClock()">Strat</button>
+            <button onclick="stopClock()">Stop</button>
+            <button onclick="resetClock()">Reset</button>
+        </div>
+    </main>
+    <audio src="./timesup.mp3"></audio>
+    <script src="./script.js"></script>
+</body>
+</html>

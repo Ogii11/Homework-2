@@ -1,3 +1,25 @@
+
+if(document.cookie != ""){
+  var ca = decodeURIComponent(document.cookie).split(";")
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf("item") == 0) {
+      c = c.substring(5 + i.toString().length, c.length);
+    }
+    var li = document.createElement("li");
+    li.className = "list-group-item";
+    li.appendChild(document.createTextNode(c));
+    var deleteBtn = document.createElement("button");
+    deleteBtn.className = "btn btn-danger btn-sm float-right delete";
+    deleteBtn.appendChild(document.createTextNode("X"));
+    li.appendChild(deleteBtn);
+    document.getElementById("items").appendChild(li);
+  }
+}
+
 var form = document.getElementById("addForm");
 var itemList = document.getElementById("items");
 var filter = document.getElementById("filter");
@@ -41,10 +63,20 @@ function addItem(e) {
 
 // Remove item
 function removeItem(e) {
+  var x = Array.prototype.slice.call(itemList.querySelectorAll('li')).indexOf(e.target.parentElement);
+  var y = "item"+x;
   if (e.target.classList.contains("delete")) {
     if (confirm("Are you sure?")) {
       var li = e.target.parentElement;
       itemList.removeChild(li);
+      removeCookie(y);
+      resetCookies();
+      for(var i = 0; i < itemList.getElementsByTagName("li").length;i++){
+        var name = `item${i}`;
+        var nValue = itemList.getElementsByTagName("li")[i].textContent.replace(/\sX$|X$/,""); 
+        setCookie(name,nValue);
+        console.log(name + nValue)
+      }
     }
   }
 }
@@ -131,4 +163,32 @@ function aler(e,f){
       allItems[itemTracker].classList.add("selected-item");
     }
   }
+}
+window.onbeforeunload = function(){
+  for(var i = 0; i < itemList.getElementsByTagName("li").length;i++){
+    var name = `item${i}`;
+    var nValue = itemList.getElementsByTagName("li")[i].textContent.replace(/\sX$|X$/,""); 
+    setCookie(name,nValue);
+  }
+};
+
+function resetCookies(){
+  for(var i = 0;i<100;i++){
+    var ime = "item"+i;
+    removeCookie(ime);
+  }
+}
+
+function setCookie(cname, cvalue) {
+  var d = new Date();
+  d.setTime(d.getTime() + (7*60*24*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function removeCookie(cname, cvalue="") {
+  var d = new Date();
+  console.log(cname);
+  d.setTime(d.getTime() - (7*60*24*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
